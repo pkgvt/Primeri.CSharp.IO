@@ -14,14 +14,16 @@ namespace IOTextFiles
 
 		public string getPath ()
 		{
-			string _path = System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "test1.txt"); 
-				
+			//Програма\Settings\settings.txt 
+			string _path = System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Settings"); 
+			_path = System.IO.Path.Combine (_path, "settings.txt");	
+
 			//Други видове директории
 
-			string _user    = Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData); 
-			Console.WriteLine (_user);
-			string _desktop = Environment.GetFolderPath ( Environment.SpecialFolder.Desktop); 
-			Console.WriteLine (_desktop);
+//			string _user    = Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData); 
+//			Console.WriteLine (_user);
+//			string _desktop = Environment.GetFolderPath ( Environment.SpecialFolder.Desktop); 
+//			Console.WriteLine (_desktop);
 
 			return _path;
 		}
@@ -45,35 +47,60 @@ namespace IOTextFiles
 
 		public bool open ()
 		{
-			try
-			{
-				
-					string _temp = "", _filePath =getPath();
+			try {
+				iniSettings ();
 
-				if (System.IO.File.Exists(_filePath)) //Проверка дали пътя е валиден
-				{
+				string _temp = "", _filePath = getPath ();
+
+				if (System.IO.File.Exists (_filePath)) { //Проверка дали пътя е валиден
 					System.IO.File.ReadAllText (_filePath);
 
-					string[] _table = _temp.Replace("\r","").Split ('\n');
+					string[] _table = _temp.Replace ("\r", "").Split ('\n');
 
-					for (int i =0; i < _table.Length;i++)
-					{
+					for (int i = 0; i < _table.Length; i++) {
 
-						_stable.stable[i] = _table [i];
+						_stable.stable [i] = _table [i];
 					}
 
-					}else{
-					Console.WriteLine ("Не е намерен такъв път.");
+				} else {
+					
 					return false;
 					
 				}
 				return true;
 			
-		}catch{
+			} catch {
+			}
+				return false;
 
-			return false;
 		}
+
+		private void iniSettings ()
+		{
+			try
+			{
+				bool _fileExist = System.IO.File.Exists (getPath());
+
+				if (! _fileExist)
+				{
+					string _directoy = System.IO.Path.GetDirectoryName (getPath());
+				
+					//Застарховаме се, че директорията съществува
+
+					if( !System.IO.Directory.Exists (_directoy))
+					{
+						System.IO.Directory.CreateDirectory (_directoy);
+
+					}
+					//Запаметяваме съдържанието на файла
+
+					save ();
+				}
+
+			}catch{
+			}
 		}
+
 	}
 }
 
